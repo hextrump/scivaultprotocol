@@ -13,14 +13,14 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
     return (
         <>
           <Head>
-            <title>Solana Scaffold Lite</title>
+            <title>SciVault Protocol</title>
           </Head>
 
           <ContextProvider>
             <div className="flex flex-col h-screen">
               <Notifications />
               <AppBar/>
-              <ContentContainer>
+              <ContentContainer >
                 <Component {...pageProps} />
                 <Footer/>
               </ContentContainer>

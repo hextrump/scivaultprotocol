@@ -1,0 +1,61 @@
+import { gql, request } from 'graphql-request';
+
+// 定义 GraphQL 查询
+const QUERY_permapaper_FILES = gql`
+  query {
+    transactions(
+      tags: [
+        { name: "application", values: ["permapaper"] },
+        { name: "Content-Type", values: ["application/pdf"] }
+      ]
+    ) {
+      edges {
+        node {
+          id
+          tags {
+            name
+            value
+          }
+          timestamp
+        }
+      }
+    }
+  }
+`;
+
+// 定义数据类型
+interface Tag {
+  name: string;
+  value: string;
+}
+
+interface TransactionNode {
+  id: string;
+  tags: Tag[];
+  timestamp: number;
+}
+
+interface TransactionEdge {
+  node: TransactionNode;
+}
+
+interface TransactionsResponse {
+  transactions: {
+    edges: TransactionEdge[];
+  };
+}
+
+// 查询函数
+export const fetchpermapaperFiles = async (): Promise<TransactionNode[]> => {
+  const endpoint = 'https://uploader.irys.xyz/graphql'; // 替换为实际的 Irys GraphQL 端点
+  try {
+    // 使用泛型指定返回类型
+    const response = await request<TransactionsResponse>(endpoint, QUERY_permapaper_FILES);
+    
+    // 提取并返回交易节点
+    return response.transactions.edges.map(edge => edge.node);
+  } catch (error) {
+    console.error('Error fetching permapaper files:', JSON.stringify(error, null, 2));
+    return [];
+  }
+};
