@@ -91,3 +91,27 @@ https://github.com/solana-labs/dapp-scaffold
 
 ## License
 MIT
+
+
+SciVault V0 - 更新说明
+日期：2024年12月1日
+今日更新内容
+优化导航菜单：
+
+更新 AppBar 和 ContentContainer 中的导航项为 Home, Read, Upload。
+修复移动端显示问题，确保导航项在移动端正常显示。
+优化侧边栏 (Drawer)：
+
+增加状态管理（isDrawerOpen），替代 checkbox 控制。
+增加覆盖层（overlay），改善用户体验。
+优化样式，确保侧边栏在窄屏时完全覆盖页面。
+文件名显示功能：
+
+在上传 PDF 文件时，文件名被添加为 filename 标签。
+更新文件列表显示，支持文件名的读取与显示。
+适配 fetchpermapaperFiles 函数，确保文件名正确解析并显示。
+更新文件
+src/components/AppBar.tsx：更新导航项。
+src/components/ContentContainer.tsx：优化侧边栏。
+src/utils/fetchpermapaperFiles.ts：添加文件名解析功能。
+src/components/PDFList.tsx：显示文件名。
