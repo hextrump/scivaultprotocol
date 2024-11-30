@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from 'react';
-import { fetchpermapaperFiles } from '../utils/fetchpermapaperFiles';
+import { FC, useEffect, useState } from "react";
+import { fetchpermapaperFiles } from "../utils/fetchpermapaperFiles";
 
 interface PDFListProps {
   title?: string; // 可选标题
@@ -17,7 +17,7 @@ export const PDFList: FC<PDFListProps> = ({ title = "Uploaded PDFs" }) => {
         setFiles(data);
         setIsLoading(false);
       } catch (err) {
-        setError('Failed to load files. Please try again later.');
+        setError("Failed to load files. Please try again later.");
         setIsLoading(false);
       }
     };
@@ -42,7 +42,7 @@ export const PDFList: FC<PDFListProps> = ({ title = "Uploaded PDFs" }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
           {files.map((file) => (
             <div key={file.id} className="card bg-gray-100 shadow-md rounded-lg p-4">
-              <h2 className="text-lg font-bold text-gray-800">File ID: {file.id}</h2>
+              <h2 className="text-lg font-bold text-gray-800">{file.filename || "Unnamed File"}</h2>
               <p className="text-sm text-gray-600">
                 Uploaded: {new Date(file.timestamp).toLocaleString()}
               </p>

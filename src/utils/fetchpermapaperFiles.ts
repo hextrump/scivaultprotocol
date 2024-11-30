@@ -33,6 +33,7 @@ interface TransactionNode {
   id: string;
   tags: Tag[];
   timestamp: number;
+  filename?: string; // 添加文件名字段
 }
 
 interface TransactionEdge {
@@ -51,9 +52,16 @@ export const fetchpermapaperFiles = async (): Promise<TransactionNode[]> => {
   try {
     // 使用泛型指定返回类型
     const response = await request<TransactionsResponse>(endpoint, QUERY_permapaper_FILES);
-    
-    // 提取并返回交易节点
-    return response.transactions.edges.map(edge => edge.node);
+
+    // 提取并返回交易节点，同时解析 filename 标签
+    return response.transactions.edges.map(edge => {
+      const node = edge.node;
+      const filenameTag = node.tags.find(tag => tag.name === "filename"); // 查找 filename 标签
+      return {
+        ...node,
+        filename: filenameTag?.value || "Unnamed File", // 如果不存在 filename 标签，设置默认值
+      };
+    });
   } catch (error) {
     console.error('Error fetching permapaper files:', JSON.stringify(error, null, 2));
     return [];
