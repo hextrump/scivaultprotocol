@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // Wallet
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
