@@ -34,13 +34,13 @@ export const extractPDFMetadata = async (file: File): Promise<
       { name: "creationDate", value: creationDate },
       { name: "modificationDate", value: modificationDate },
       { name: "Content-Type", value: "application/pdf" },
-      { name: "application", value: "permapaper" }, // 默认添加 "permapaper" 标签
+      { name: "application", value: "scivaultv0" }, // 默认添加 "scivaultv0" 标签
     ];
   } catch (error) {
     console.error("Error extracting PDF metadata:", error);
     return [
       { name: "Content-Type", value: "application/pdf" },
-      { name: "application", value: "permapaper" }, // 默认添加 "permapaper" 标签
+      { name: "application", value: "scivaultv0" }, // 默认添加 "scivaultv0" 标签
       { name: "error", value: "Failed to extract metadata" },
     ];
   }

@@ -109,9 +109,9 @@ SciVault V0 - 更新说明
 
 在上传 PDF 文件时，文件名被添加为 filename 标签。
 更新文件列表显示，支持文件名的读取与显示。
-适配 fetchpermapaperFiles 函数，确保文件名正确解析并显示。
+适配 fetchscivaultv0Files 函数，确保文件名正确解析并显示。
 更新文件
 src/components/AppBar.tsx：更新导航项。
 src/components/ContentContainer.tsx：优化侧边栏。
-src/utils/fetchpermapaperFiles.ts：添加文件名解析功能。
+src/utils/fetchscivaultv0Files.ts：添加文件名解析功能。
 src/components/PDFList.tsx：显示文件名。

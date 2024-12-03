@@ -72,7 +72,7 @@ export const useFileUploader = (selectedFile: File | null) => {
       // 生成上传标签
       const generatedTags = [
         { name: "filename", value: cleanedFileName },
-        { name: "application", value: "permapaper" }, // 添加 permapaper 标签
+        { name: "application", value: "scivaultv0" }, // 添加 scivaultv0 标签
         ...metadataTags,
       ];
 
