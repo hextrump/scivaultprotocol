@@ -23,7 +23,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@vercel/speed-insights": "^1.1.0",
     "daisyui": "^1.24.3",
-    "date-fns": "^2.29.3",
+    "date-fns": "^4.1.0",
     "graphql": "^16.9.0",
     "graphql-request": "^7.1.2",
     "immer": "^9.0.12",
