@@ -1,11 +1,11 @@
 import { gql, request } from 'graphql-request';
 
 // 定义 GraphQL 查询
-const QUERY_scivaultv0_FILES = gql`
+const QUERY_scivaultv1_FILES = gql`
   query {
     transactions(
       tags: [
-        { name: "application", values: ["scivaultv0"] },
+        { name: "application", values: ["scivaultv1"] },
         { name: "Content-Type", values: ["application/pdf"] }
       ]
     ) {
@@ -51,7 +51,7 @@ export const fetchFiles = async (): Promise<TransactionNode[]> => {
   const endpoint = 'https://uploader.irys.xyz/graphql'; // 替换为实际的 Irys GraphQL 端点
   try {
     // 使用泛型指定返回类型
-    const response = await request<TransactionsResponse>(endpoint, QUERY_scivaultv0_FILES);
+    const response = await request<TransactionsResponse>(endpoint, QUERY_scivaultv1_FILES);
 
     // 提取并返回交易节点，同时解析 filename 标签
     return response.transactions.edges.map(edge => {
@@ -63,7 +63,7 @@ export const fetchFiles = async (): Promise<TransactionNode[]> => {
       };
     });
   } catch (error) {
-    console.error('Error fetching scivaultv0 files:', JSON.stringify(error, null, 2));
+    console.error('Error fetching scivaultv1 files:', JSON.stringify(error, null, 2));
     return [];
   }
 };

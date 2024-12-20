@@ -1,6 +1,6 @@
 {
   "name": "solana-dapp-next",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Solana Maintainers <maintainers@solana.foundation>",
   "license": "MIT",
   "private": false,
@@ -33,6 +33,7 @@
     "pdf-lib": "^1.17.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.3.5",
     "tmp": "^0.2.3",
     "zustand": "^3.6.9"
   },

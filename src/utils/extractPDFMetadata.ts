@@ -4,44 +4,48 @@ export const extractPDFMetadata = async (file: File): Promise<
   Array<{ name: string; value: string }>
 > => {
   try {
-    // 加载 PDF 文件
+    console.log("Starting PDF metadata extraction");
     const arrayBuffer = await file.arrayBuffer();
     const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-    // 提取 Metadata
-    const title = pdfDoc.getTitle() || "Title not found";
-    const author = pdfDoc.getAuthor() || "Author not found";
-    const subject = pdfDoc.getSubject() || "Subject not found";
-    const keywords = pdfDoc.getKeywords() || "Keywords not found";
+    const tags: Array<{ name: string; value: string }> = [];
 
-    // 提取 Creator 字段并直接用作 DOI
-    const doi = pdfDoc.getCreator() || "DOI not found";
+    // 提取基本元数据
+    const title = pdfDoc.getTitle();
+    if (title) tags.push({ name: "title", value: title });
 
-    const creationDate = pdfDoc.getCreationDate()
-      ? pdfDoc.getCreationDate().toISOString()
-      : "Creation date not found";
-    const modificationDate = pdfDoc.getModificationDate()
-      ? pdfDoc.getModificationDate().toISOString()
-      : "Modification date not found";
+    const author = pdfDoc.getAuthor();
+    if (author) tags.push({ name: "authors", value: author });
 
-    // 返回提取的 Metadata
-    return [
-      { name: "title", value: title },
-      { name: "author", value: author },
-      { name: "subject", value: subject },
-      { name: "keywords", value: keywords },
-      { name: "doi", value: doi }, // 从 Creator 提取的 DOI
-      { name: "creationDate", value: creationDate },
-      { name: "modificationDate", value: modificationDate },
-      { name: "Content-Type", value: "application/pdf" },
-      { name: "application", value: "scivaultv0" }, // 默认添加 "scivaultv0" 标签
-    ];
+    const subject = pdfDoc.getSubject();
+    if (subject) tags.push({ name: "subject", value: subject });
+
+    const keywords = pdfDoc.getKeywords();
+    if (keywords) tags.push({ name: "keywords", value: keywords });
+
+    // 尝试从 Creator 字段提取 DOI
+    const creator = pdfDoc.getCreator();
+    if (creator && creator.match(/10\.\d{4,}/)) {
+      tags.push({ name: "doi", value: creator });
+    }
+
+    // 日期信息
+    const creationDate = pdfDoc.getCreationDate();
+    if (creationDate) {
+      tags.push({ name: "creationDate", value: creationDate.toISOString() });
+    }
+
+    const modificationDate = pdfDoc.getModificationDate();
+    if (modificationDate) {
+      tags.push({ name: "modificationDate", value: modificationDate.toISOString() });
+    }
+
+    console.log("Extracted PDF tags:", tags);
+    return tags;
   } catch (error) {
     console.error("Error extracting PDF metadata:", error);
     return [
-      { name: "Content-Type", value: "application/pdf" },
-      { name: "application", value: "scivaultv0" }, // 默认添加 "scivaultv0" 标签
-      { name: "error", value: "Failed to extract metadata" },
+      { name: "error", value: "Failed to extract PDF metadata" }
     ];
   }
 };

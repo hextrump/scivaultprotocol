@@ -1,6 +1,9 @@
 import { WalletAdapterNetwork, WalletError } from "@solana/wallet-adapter-base";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
-import { UnsafeBurnerWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { 
+    PhantomWalletAdapter,
+    SolflareWalletAdapter,
+} from '@solana/wallet-adapter-wallets';
 import { FC, ReactNode, useCallback, useMemo } from "react";
 import { AutoConnectProvider } from "./AutoConnectProvider";
 import { notify } from "../utils/notifications";
@@ -13,13 +16,14 @@ const ReactUIWalletModalProviderDynamic = dynamic(
 );
 
 export const ContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    // 固定 QuikNode RPC 地址
     const endpoint = process.env.NEXT_PUBLIC_RPC_ENDPOINT || "";
 
-    // 配置钱包，仍然使用 UnsafeBurnerWalletAdapter（可以添加更多钱包适配器）
-    const wallets = useMemo(() => [new UnsafeBurnerWalletAdapter()], []);
+    // 配置支持的钱包列表
+    const wallets = useMemo(() => [
+        new PhantomWalletAdapter(),
+        new SolflareWalletAdapter(),
+    ], []);
 
-    // 钱包错误处理逻辑
     const onError = useCallback(
         (error: WalletError) => {
             notify({
@@ -34,7 +38,7 @@ export const ContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <NetworkConfigurationProvider>
             <ConnectionProvider endpoint={endpoint}>
-                <WalletProvider wallets={wallets} onError={onError}>
+                <WalletProvider wallets={wallets} onError={onError} autoConnect>
                     <ReactUIWalletModalProviderDynamic>{children}</ReactUIWalletModalProviderDynamic>
                 </WalletProvider>
             </ConnectionProvider>

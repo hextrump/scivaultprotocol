@@ -1,32 +1,59 @@
-import React, { FC } from "react";
+import React, { useCallback, FC } from 'react';
+import { useDropzone, Accept } from 'react-dropzone';
 
 interface FileSelectorProps {
-    onSelectFile: (files: File[]) => void;
-    accept?: string;
+  onSelectFiles: (files: { pdf: File | null; json?: File } | ((prev: { pdf: File | null; json?: File }) => { pdf: File | null; json?: File })) => void;
+  accept: Accept;
 }
 
-export const FileSelector: FC<FileSelectorProps> = ({ onSelectFile, accept }) => {
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) {
-            onSelectFile(Array.from(event.target.files));
-        }
-    };
+export const FileSelector: FC<FileSelectorProps> = ({ onSelectFiles, accept }) => {
+  // PDF文件选择器
+  const { getRootProps: getPdfRootProps, getInputProps: getPdfInputProps } = useDropzone({
+    onDrop: useCallback((acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      if (file && file.type === 'application/pdf') {
+        onSelectFiles(prev => ({ ...prev, pdf: file }));
+      }
+    }, [onSelectFiles]),
+    accept: { 'application/pdf': ['.pdf'] },
+    multiple: false
+  });
 
-    return (
-        <div className="flex justify-center items-center mt-4">
-            <label
-                htmlFor="file-input"
-                className="cursor-pointer px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-md shadow-lg hover:scale-105"
-            >
-                Select PDF File
-            </label>
-            <input
-                id="file-input"
-                type="file"
-                accept={accept}
-                onChange={handleFileChange}
-                className="hidden"
-            />
-        </div>
-    );
+  // JSON文件选择器
+  const { getRootProps: getJsonRootProps, getInputProps: getJsonInputProps } = useDropzone({
+    onDrop: useCallback((acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      if (file && file.type === 'application/json') {
+        onSelectFiles(prev => ({ ...prev, json: file }));
+      }
+    }, [onSelectFiles]),
+    accept: { 'application/json': ['.json'] },
+    multiple: false
+  });
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* PDF选择按钮 */}
+      <div
+        {...getPdfRootProps()}
+        className="p-4 border-2 border-dashed rounded-lg cursor-pointer hover:border-indigo-400 transition-colors bg-gray-800 text-center"
+      >
+        <input {...getPdfInputProps()} />
+        <p className="text-white">
+          Select PDF File (Required)
+        </p>
+      </div>
+
+      {/* JSON选择按钮 */}
+      <div
+        {...getJsonRootProps()}
+        className="p-4 border-2 border-dashed rounded-lg cursor-pointer hover:border-purple-400 transition-colors bg-gray-800 text-center"
+      >
+        <input {...getJsonInputProps()} />
+        <p className="text-white">
+          Select JSON Metadata (Optional)
+        </p>
+      </div>
+    </div>
+  );
 };

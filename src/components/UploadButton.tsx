@@ -4,17 +4,12 @@ import { UploadStatus } from "./UploadStatus";
 
 interface UploadButtonProps {
   selectedFile: File | null;
-  onTagsGenerated?: (tags: Array<{ name: string; value: string }>) => void; // 新增回调
+  tags: Array<{ name: string; value: string }>;
 }
 
-export const UploadButton: FC<UploadButtonProps> = ({ selectedFile, onTagsGenerated }) => {
-  const { handleUpload, link, uploadCost, walletBalance, isUploading, errorMessage, tags } =
-    useFileUploader(selectedFile);
-
-  // 将生成的 tags 传递给父组件
-  if (tags.length > 0 && onTagsGenerated) {
-    onTagsGenerated(tags);
-  }
+export const UploadButton: FC<UploadButtonProps> = ({ selectedFile, tags }) => {
+  const { handleUpload, link, uploadCost, walletBalance, isUploading, errorMessage } =
+    useFileUploader(selectedFile, tags);
 
   return (
     <div>

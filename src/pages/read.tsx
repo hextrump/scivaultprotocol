@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
-import Head from "next/head";
 import { useState, useEffect } from "react";
+import Head from 'next/head';
+import { SearchBar } from "../components/SearchBar";
+import { FileGrid } from "../components/FileGrid";
 import { fetchFiles as fetchFilesFromApi } from "../utils/fetchFiles";
-import { ReadView } from "../views/read";
 
 type File = {
   id: string;
@@ -10,68 +10,62 @@ type File = {
   timestamp: number;
 };
 
-const Read: NextPage = () => {
+export default function ReadPage() {
   const [files, setFiles] = useState<File[]>([]);
-  const [filteredFiles, setFilteredFiles] = useState<File[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [filteredFiles, setFilteredFiles] = useState<File[]>([]);
 
-  // Fetch files on component mount
   useEffect(() => {
-    const fetchFiles = async () => {
+    const loadFiles = async () => {
       try {
-        const data = await fetchFilesFromApi();
-        setFiles(data);
-        setFilteredFiles(data); // Show all files by default
-        setIsLoading(false);
-      } catch (err) {
-        console.error("Error fetching files:", err);
-        setError("Failed to load files. Please try again later.");
-        setIsLoading(false);
+        const fetchedFiles = await fetchFilesFromApi();
+        setFiles(fetchedFiles);
+        setFilteredFiles(fetchedFiles);
+      } catch (error) {
+        console.error("Error fetching files:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchFiles();
+    loadFiles();
   }, []);
 
-  // Filter files based on search query
   const handleSearch = () => {
-    if (!searchQuery.trim()) {
-      setFilteredFiles(files); // Reset to all files if search query is empty
-    } else {
-      const filtered = files.filter((file) =>
-        file.tags.some((tag) =>
-          (tag.name === "title" && tag.value.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (tag.name === "doi" && tag.value.toLowerCase().includes(searchQuery.toLowerCase()))
-        )
-      );
-      setFilteredFiles(filtered);
-    }
+    const filtered = files.filter((file) =>
+      file.tags.some(
+        (tag) =>
+          (tag.name === "title" || tag.name === "doi" || tag.name === "authors") &&
+          tag.value.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+    setFilteredFiles(filtered);
   };
 
   return (
-    <div>
+    <>
       <Head>
-        <title>Read PDFs</title>
-        <meta name="description" content="Browse and search uploaded PDFs" />
+        <title>SciVault Protocol - Read</title>
+        <meta name="description" content="Browse and read research papers" />
       </Head>
-      {isLoading && (
-        <div className="text-center text-slate-400 mt-4">Loading files...</div>
-      )}
-      {error && (
-        <div className="text-center text-red-500 mt-4">{error}</div>
-      )}
-      {!isLoading && !error && (
-        <ReadView
-          files={filteredFiles}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-        />
-      )}
-    </div>
-  );
-};
 
-export default Read;
+      <div className="mx-auto p-6 max-w-5xl text-center bg-gray-900 rounded-lg shadow-lg">
+        <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-6">
+          Browse Uploaded PDFs
+        </h1>
+        <SearchBar
+          placeholder="Search by Title, DOI, or Authors"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onSearch={handleSearch}
+        />
+        {loading ? (
+          <div className="mt-6">Loading...</div>
+        ) : (
+          <FileGrid files={filteredFiles} />
+        )}
+      </div>
+    </>
+  );
+}
