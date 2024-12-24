@@ -98,6 +98,7 @@ At SciVault Protocol, we believe in empowering the community to build and custom
 - Improved mobile responsiveness
 - Enhanced sidebar functionality
 - Added filename display feature for uploaded PDFs
+- Added metadata display functionality for research papers
 
 ## License
 MIT
