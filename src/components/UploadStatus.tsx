@@ -7,42 +7,78 @@ interface UploadStatusProps {
   errorMessage: string | null;
 }
 
+interface StatusItemProps {
+  label: string;
+  value: string;
+  type?: 'success' | 'error' | 'link' | 'default';
+}
+
+const StatusItem: FC<StatusItemProps> = ({ label, value, type = 'default' }) => {
+  const getTextColorClass = () => {
+    switch (type) {
+      case 'success': return 'text-green-500';
+      case 'error': return 'text-red-500';
+      case 'link': return 'text-blue-400 underline';
+      default: return 'text-gray-300';
+    }
+  };
+
+  return (
+    <div className="mt-4">
+      <p className="text-lg font-bold text-white">{label}</p>
+      {type === 'link' ? (
+        <a 
+          href={value} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className={getTextColorClass()}
+        >
+          {value}
+        </a>
+      ) : (
+        <p className={getTextColorClass()}>{value}</p>
+      )}
+    </div>
+  );
+};
+
 export const UploadStatus: FC<UploadStatusProps> = ({
   link,
   walletBalance,
   uploadCost,
   errorMessage,
 }) => (
-  <div>
+  <div className="bg-gray-800 rounded-lg p-4 mt-4">
     {walletBalance && (
-      <div className="mt-4">
-        <p className="text-lg font-bold">Wallet Balance:</p>
-        <p className="text-green-500">{walletBalance}</p>
-      </div>
+      <StatusItem 
+        label="Wallet Balance" 
+        value={walletBalance} 
+        type="success" 
+      />
     )}
 
     {uploadCost && (
-      <div className="mt-4">
-        <p className="text-lg font-bold">Estimated Upload Cost:</p>
-        <p className={uploadCost.includes("Insufficient") ? "text-red-500" : "text-green-500"}>
-          {uploadCost}
-        </p>
-      </div>
+      <StatusItem 
+        label="Estimated Upload Cost" 
+        value={uploadCost} 
+        type={uploadCost.includes("Insufficient") ? "error" : "success"} 
+      />
     )}
 
     {link && (
-      <div className="mt-4">
-        <p className="text-lg font-bold">Uploaded Link:</p>
-        <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
-          {link}
-        </a>
-      </div>
+      <StatusItem 
+        label="Uploaded Link" 
+        value={link} 
+        type="link" 
+      />
     )}
 
     {errorMessage && (
-      <div className="mt-4 text-red-500">
-        <p>{errorMessage}</p>
-      </div>
+      <StatusItem 
+        label="Error" 
+        value={errorMessage} 
+        type="error" 
+      />
     )}
   </div>
 );

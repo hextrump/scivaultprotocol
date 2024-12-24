@@ -65,10 +65,10 @@ export const useFileUploader = (
 
   return {
     handleUpload,
-    link,
-    uploadCost,
-    walletBalance,
     isUploading,
+    estimatedPrice: uploadCost,
+    uploadUrl: link,
     errorMessage,
+    walletBalance
   };
 };
